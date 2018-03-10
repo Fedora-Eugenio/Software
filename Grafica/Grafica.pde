@@ -1,11 +1,14 @@
 import processing.serial.*;
 byte[] inByte;
 Serial myPort;  // The serial port
-int trama1, trama2, trama3, trama4;
-int analogA, datoA, analogB, datoB;
+int trama1, trama2, trama3, trama4, trama5, trama6, trama7, trama8;
+int Ultrasonido, datoUS, EjeX, EjeY,  EjeZ;
+float datoEjeX, datoEjeY, datoEjeZ;
 float xA1 = 10, xA2 = 40, yA1 = 0.0, yA2 = 0.0;
 float xB1 = 10, xB2 = 40, yB1 = 0.0, yB2 = 0.0;
-float angulo;
+float xC1 = 10, xC2 = 40, yC1 = 0.0, yC2 = 0.0;
+float xD1 = 10, xD2 = 40, yD1 = 0.0, yD2 = 0.0;
+float anguloV, anguloH;
 int relleno; 
 color c1;
 PrintWriter output;
@@ -42,14 +45,43 @@ void draw() {
    if (relleno==3){
      c1 = color(255, 255, 255);}*/
   strokeWeight(2);
-  stroke(0, 0, 255);
+  
+  //linea blanca Ultrasonido
+  stroke(255);
   line(xA1, yA1, xA2, yA2);
+  
+  //linea roja Eje X
   stroke(255, 0, 0);
   line(xB1, yB1, xB2, yB2);
-  angulo= atan(datoB/datoA)*180/PI;
-  println(angulo +"°");
   
-  output.println(binary(datoA, 12)); // Write data
+  //linea verde Eje Y
+  stroke(0, 255, 0);
+  line(xC1, yC1, xC2, yC2);
+  
+  //linea azul Eje Z
+  stroke(0, 0, 255);
+  line(xD1, yD1, xD2, yD2);
+  
+  /*
+ if(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2)) > 1){
+   if ( datoEjeY < 1){
+     anguloV= atan(datoEjeZ/datoEjeX)*180/PI;
+     println("ángulo vertical= " + anguloV + "°");
+   }
+   if ( datoEjeX < 1){
+     anguloH= atan(datoEjeZ/datoEjeY)*180/PI;
+     println("ángulo horizontal= " + anguloH + "°");
+   }
+  */
+  
+  //println("Distancia= " + datoUS + "cm"); 
+  
+  anguloV= atan(datoEjeZ/datoEjeX)*180/PI;
+  println("ángulo vertical= " + anguloV + "°");
+  anguloH= atan(datoEjeZ/datoEjeY)*180/PI;
+  println("ángulo horizontal= " + anguloH + "°");
+  
+  output.println(binary(datoUS, 12)); // Write data
 }
 
 void serialEvent(Serial myPort) {
@@ -58,25 +90,41 @@ void serialEvent(Serial myPort) {
     
     trama1 = inByte[1];
     trama2 = inByte[2];
-    analogA = (trama1 & 0x1F);
-    analogA = (analogA << 7);
-    analogA = (analogA | trama2);
-    datoA = analogA;
-    analogA = 690-(analogA*680/4095);
+    Ultrasonido = (trama1 & 0x1F);
+    Ultrasonido = (Ultrasonido << 7);
+    Ultrasonido = (Ultrasonido | trama2);
+    datoUS = Ultrasonido;
+    Ultrasonido = 690-(Ultrasonido*680/4095);
     
     trama3 = inByte[3];
     trama4 = inByte[4];
-    analogB = (trama3 & 0x1F);
-    analogB = (analogB << 7);
-    analogB = (analogB | trama4);
-    datoB = analogB;
-    analogB = 690-(analogB*680/4095);
+    EjeX = (trama3 & 0x1F);
+    EjeX = (EjeX << 7);
+    EjeX = (EjeX | trama4);
+    datoEjeX = map(EjeX, 0, 3, -1, 1);
+    EjeX = 690-(EjeX*680/4095);
+    
+    trama5 = inByte[5];
+    trama6 = inByte[6];
+    EjeY = (trama5 & 0x1F);
+    EjeY = (EjeY << 7);
+    EjeY = (EjeY | trama6);
+    datoEjeY = map(EjeY, 0, 3, -1, 1);
+    EjeY = 690-(EjeY*680/4095);
+    
+    trama7 = inByte[7];
+    trama8 = inByte[8];
+    EjeZ = (trama7 & 0x1F);
+    EjeZ = (EjeZ << 7);
+    EjeZ = (EjeZ | trama8);
+    datoEjeZ = map(EjeZ, 0, 3, -1, 1);
+    EjeZ = 690-(EjeZ*680/4095);
     
     if (xA1 >= 10 & xA1 < 1340){
     xA1 = xA2;
     xA2 += 30;
     yA1 = yA2;
-    yA2 = analogA;
+    yA2 = Ultrasonido;
     }else{
        xA1=10;
        xA2=40;
@@ -86,10 +134,30 @@ void serialEvent(Serial myPort) {
     xB1 = xB2;
     xB2 += 30;
     yB1 = yB2;
-    yB2 = analogB;
+    yB2 = EjeX;
     }else{
        xB1=10;
        xB2=40;
+     }
+     
+    if (xC1 >= 10 & xC1 < 1340){
+    xC1 = xC2;
+    xC2 += 30;
+    yC1 = yC2;
+    yC2 = EjeY;
+    }else{
+       xC1=10;
+       xC2=40;
+     }
+     
+    if (xD1 >= 10 & xD1 < 1340){
+    xD1 = xD2;
+    xD2 += 30;
+    yD1 = yD2;
+    yD2 = EjeZ;
+    }else{
+       xD1=10;
+       xD2=40;
      }
    }
 }
