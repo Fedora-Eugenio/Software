@@ -19,7 +19,7 @@ void setup() {
   printArray(Serial.list());
   // Open the port you are using at the rate you want:
   myPort = new Serial(this, Serial.list()[0], 115200);
-  myPort.buffer(5);
+  myPort.buffer(9);
   background(0);
   // Create a new file in the sketch directory
   output = createWriter("prueba_ultrasonido  .txt"); 
@@ -61,6 +61,7 @@ void draw() {
   //linea azul Eje Z
   stroke(0, 0, 255);
   line(xD1, yD1, xD2, yD2);
+  
   
   /*
  if(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2)) > 1){
