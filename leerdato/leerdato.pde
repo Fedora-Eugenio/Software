@@ -1,6 +1,6 @@
 size(1000, 400);
 // Open a file and read its binary data 
-byte b[] = loadBytes("prueba_ultrasonido.txt"); 
+byte b[] = loadBytes("prueba2x.txt"); 
 float a=0, s=0, y, y2, x=10, suma=0;
 int k=11, contadorMax=4095, contadormin=0;
 float[] hist = new float[4096];
@@ -36,9 +36,9 @@ for (int i = 0; i < b.length; i++) {
 
 
 //Se dibuja el histograma
-    println(suma);
+    println("suma="+suma);
     float histMax = max(hist);
-    println(histMax);
+    //println(histMax);
     x=0;
     a=0;
     for(int j=0; j < 4096; j++){
@@ -51,12 +51,12 @@ for (int i = 0; i < b.length; i++) {
     while (hist[contadormin] == 0) {
       contadormin++;
     } 
-    println(contadormin);
+    //println(contadormin);
     
     while (hist[contadorMax] == 0) {
       contadorMax--;
     } 
-    println(contadorMax);
+    //println(contadorMax);
     
       strokeWeight(2);
       strokeCap(SQUARE);
@@ -67,7 +67,7 @@ for (int i = 0; i < b.length; i++) {
       a=histMax*10/suma;
       text(j*a, 10, height-43-j*30);
       text("-", 50, height-45-j*30);
-      println("a="+a);
+     // println("a="+a);
     }
     for(int j=0; j < 4096; j++){
       y2=hist[j]*300/histMax;
@@ -81,7 +81,7 @@ for (int i = 0; i < b.length; i++) {
       }
       if(y2!=0){
         line(x, height-50, x, height-50-y2);
-        println("["+j+"]"+ hist[j] + " " + y2 + " " + voltaje[j]);  
+       // println("["+j+"]"+ hist[j] + " " + y2 + " " + voltaje[j]);  
       }   
     }
    
