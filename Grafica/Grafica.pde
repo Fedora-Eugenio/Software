@@ -45,20 +45,22 @@ void draw() {
    if (relleno==3){
      c1 = color(255, 255, 255);}
   strokeWeight(2);
-  
-  
-  
-  
- if(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2)) > 1){
-   if ( datoEjeY < 1){
-     anguloV= atan(datoEjeZ/datoEjeX)*180/PI;
-     println("ángulo vertical= " + anguloV + "°");
-   }
-   if ( datoEjeX < 1){
-     anguloH= atan(datoEjeZ/datoEjeY)*180/PI;
-     println("ángulo horizontal= " + anguloH + "°");
-   }
   */
+  
+  
+  
+ if(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2)) > 1000){
+   if ( datoEjeY < 50 & datoEjeY > -50){
+    anguloV= atan2(datoEjeZ, datoEjeX)*180/PI;
+    println("ángulo vertical= " + anguloV + "°");
+    println("Eje Y= " + datoEjeY);
+   }
+    if ( datoEjeX < 50 & datoEjeX > -50){
+      anguloH= atan2(datoEjeZ, datoEjeY)*180/PI;
+      println("ángulo horizontal= " + anguloH + "°");
+      println("Eje X= " + datoEjeX);
+   }
+ }
   
   //println("Distancia= " + datoUS + "cm"); 
   //linea blanca Ultrasonido
@@ -77,13 +79,13 @@ void draw() {
   stroke(0, 0, 255);
   line(xD1, yD1, xD2, yD2);
   println("X= " + datoEjeX + "  Y= " + datoEjeY + "  Z= " + datoEjeZ);
-   
-  anguloV= atan2(datoEjeZ, datoEjeX)*180/PI;
-  println("ángulo vertical= " + anguloV + "°");
-  anguloH= atan2(datoEjeZ, datoEjeY)*180/PI;
+   //float modulo = sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2));
+   //println(modulo);
+ // output.print(modulo + " "); // Write data
+ anguloV= atan2(datoEjeZ, datoEjeX)*180/PI;
+ anguloH= atan2(datoEjeZ, datoEjeY)*180/PI;
   println("ángulo horizontal= " + anguloH + "°");
-  
-  output.println(binary(datoEjeZ, 12)); // Write data
+  println("ángulo vertical= " + anguloV + "°");
 }
 
 void serialEvent(Serial myPort) {
