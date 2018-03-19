@@ -3,18 +3,20 @@ Códigos de Processing
 
 
 ## Table of Contents
-[Modules list](#modules-list)
-[Requirements](#requirements)
-[Software details](#software-details)
-[License](#license)
+- [Modules list](#modules-list)
+- [Requirements](#requirements)
+- [Software details](#software-details)
+- [License](#license)
 
-## Modules list- 
-[videostrip](https://github.com/MecatronicaUSB/uwimageproc/tree/master/modules/videostrip) Automatic frame extraction for 2D mosaic and 3D reconstruction - 
+## Modules list
+- [videostrip](https://github.com/MecatronicaUSB/uwimageproc/tree/master/modules/videostrip) Automatic frame extraction for 2D mosaic and 3D reconstruction 
+- 
 [bgdehaze](https://github.com/MecatronicaUSB/uwimageproc/tree/master/modules/bgdehaze) BG Haze removal for UW images- 
 [aclahe](https://github.com/MecatronicaUSB/uwimageproc/tree/master/modules/aclahe) Automatic Contrast-Limited AHE (CLAHE)- 
 [histretch](https://github.com/MecatronicaUSB/uwimageproc/tree/master/modules/histretch) Percentile based histogram stretch w/channel selection- Automatic 2D mosaic generation > migrated to 
 [mosaic](https://github.com/MecatronicaUSB/mosaic)- 3D sparse and dense reconstruction > migrated to 
 [uw-slam](https://github.com/MecatronicaUSB/uw-slam)
+
 Each module contains information describing its usage, with (usually) some useful README file. Code documentation is expected to be provided in Doxygen-compatible format. The current release contains C/C++, Python and/or Matlab implementations.
 
 ## Requirements
