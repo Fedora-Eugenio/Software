@@ -5,10 +5,10 @@ AudioSample hit;
 AudioSample recarga;
 AudioSample cambio;
 AudioSample Tron;
-boolean Reset=true, shoot=false, inicio=true;
+boolean Reset=true, Gatillo=false, Disponible=true, shoot=false, inicio=true;
 PImage silueta;
 float Disparos, Hit, Puntaje;
-int Diana, Blanco, Tiempo=0, Modo=1, objetivo=1, contador=0;
+int Diana, Blanco, Tiempo=0, Modo=1, objetivo=1, contador=0, espera=0;
 
 void setup(){
   size(900, 500);
@@ -23,12 +23,15 @@ void setup(){
 
 void draw() {
   if(contador==0){
-    Tron.trigger();
-   // Tron.setGain(0.9);
+    //Tron.trigger();
   }
   contador++;
    if(contador==11700){
       contador=0;
+    }
+    if (mousePressed==true) {
+      Gatillo=true;
+      inicio=false;
     }
   if(inicio){
     background(0);
@@ -66,12 +69,26 @@ void draw() {
   if(Disparos==0){
     Puntaje=0;
   }
+  
+  if(Gatillo & espera==0){
+    shoot=true;
+  }
+  if(shoot){
+    espera++;
+  }
+  if(espera==2){
+    shoot=false; 
+  }
+  if(!Gatillo){
+    espera=0;
+    shoot=false;
+  }
+  text("espera= " + espera, 600, 450 );
   switch(Modo){
     case 1:
       if(shoot){
         Disparos++;
         disparo.trigger();
-        shoot=false;
       }
       switch(Diana) {
       case 1: 
@@ -131,7 +148,6 @@ void draw() {
         if(shoot){
           Disparos++;
           disparo.trigger();
-          shoot=false;
         }
         if(Diana!=0){
           Hit++;
@@ -151,7 +167,6 @@ void draw() {
       if(shoot){
          Disparos++;
          disparo.trigger();
-         shoot=false;
         }
       fill(0, 255, 0);  
       switch(objetivo) {
@@ -179,6 +194,7 @@ void draw() {
         }
     
     }
+    Gatillo=false;
   }
 }
 void keyPressed() {
@@ -195,10 +211,7 @@ void keyPressed() {
       cambio.trigger();
       Reset=true;
     }
-    if (key == 'd') {
-      shoot=true;
-      inicio=false;
-    }
+    
     if (key == '8') {
       Diana=1;
     }
