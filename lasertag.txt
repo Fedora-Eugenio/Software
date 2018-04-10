@@ -1,4 +1,11 @@
 import ddf.minim.*;
+import processing.serial.*;
+byte[] inByte;
+Serial myPort;  // The serial port
+int trama1, trama2, trama3, trama4, trama5, trama6, trama7, trama8;
+int Ultrasonido, datoUS, EjeX, EjeY,  EjeZ, datoEjeX, datoEjeY, datoEjeZ;
+int Boton, Foto1, Foto2, Foto3, Foto4, Foto5;
+float anguloV, anguloH;
 Minim soundengine;
 AudioSample disparo;
 AudioSample hit;
@@ -8,12 +15,15 @@ AudioSample Tron;
 boolean Reset=true, Gatillo=false, Disponible=true, shoot=false, inicio=true;
 PImage silueta;
 float Disparos, Hit, Puntaje;
-int Diana, Blanco, Tiempo=3600, Modo=1, objetivo=1, contador=0, espera=0, j=0, k=0;
-float[] distribution = new float[360];
-PFont font1;
+int Diana, Blanco, Tiempo=0, Modo=1, objetivo=1, contador=0, espera=0;
 
 void setup(){
-  size(1000, 500);
+  size(900, 500);
+  // List all the available serial ports
+  printArray(Serial.list());
+  // Open the port you are using at the rate you want:
+ // myPort = new Serial(this, Serial.list()[0], 115200);
+ // myPort.buffer(9);
   soundengine = new Minim(this);
   disparo = soundengine.loadSample("disparo.mp3", 1024);
   hit = soundengine.loadSample("hit.mp3", 1024);
@@ -21,41 +31,25 @@ void setup(){
   cambio = soundengine.loadSample("cambio.mp3", 1024);
   Tron = soundengine.loadSample("TronLegacy.mp3", 2048);
   silueta = loadImage("silueta.jpg");
-  font1 = loadFont("Playbill-70.vlw");
-  for (int i = 0; i < distribution.length; i++) {
-    distribution[i] = int(randomGaussian() * 150);
-  }
 }
 
 void draw() {
+  datoUS=1;
   if(contador==0){
-    //Tron.trigger();
+    Tron.trigger();
   }
   contador++;
    if(contador==11700){
       contador=0;
     }
-    if (mousePressed==true) {
+     if (mousePressed == true) {
       Gatillo=true;
-      
+      inicio=false;
     }
   if(inicio){
     background(0);
-   
-    translate(width/2, height/2);
-
-  for (int i = 0; i < distribution.length; i++) {
-    rotate((TWO_PI)/distribution.length);
-    float dist = abs(distribution[i]);
-    stroke(255, 0, 0);
-    line(0, 0, dist, 0);
-    j++;
-  }
-  fill(255);
-  textFont(font1, 70);
-     text("LASER-TAG", -90, -50);
-    text("Recarga para continuar", -175, 50); 
-   
+    text("LASERTAG", 400, 200);
+    text("Aprieta el gatillo para continuar", 350, 250);  
   }else{
 
   if(Reset){
@@ -64,12 +58,18 @@ void draw() {
       Puntaje=0;
       Diana=0;
       Blanco=0;
-      Tiempo=3600;
+      Tiempo=0;
       shoot=false;
       Reset=false;
   }
   background(0);
   fill(255);
+  text("Modo= " + Modo, 600, 50 );
+  text("Disparos= " + Disparos, 600, 100 );
+  text("Hit= " + Hit, 600, 150 );
+  text("Puntaje= " + Puntaje, 600, 200 );
+  text("Tiempo= " + Tiempo, 600, 250 );
+  text("Contador= " + contador, 600, 400 );
   image(silueta, 0, 0);
   fill(0, 0, 255);
   ellipse(250, 100, 20, 20);
@@ -78,7 +78,41 @@ void draw() {
   ellipse(175, 350, 20, 20);
   ellipse(325, 350, 20, 20);
   fill(255, 0, 0);
-  Puntaje=Hit/Disparos;
+  
+  
+  if(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2)) > 1000){
+   if ( datoEjeY < 50 & datoEjeY > -50){
+    anguloV= atan2(datoEjeZ, datoEjeX)*180/PI;
+    println("ángulo vertical= " + anguloV + "°");
+    println("Eje Y= " + datoEjeY);
+   }
+    if ( datoEjeX < 50 & datoEjeX > -50){
+      anguloH= atan2(datoEjeZ, datoEjeY)*180/PI;
+      println("ángulo horizontal= " + anguloH + "°");
+      println("Eje X= " + datoEjeX);
+   }
+ }
+
+  /*if (Boton != 0) {
+      Gatillo=true;
+      inicio=false;
+    }*/
+  if (Foto1 != 0) {
+      Diana=1;
+    }
+    if (Foto2 != 0) {
+      Diana=2;
+    }
+    if (Foto2 != 0) { 
+      Diana=3;
+    }
+    if (Foto4 != 0) {
+      Diana=4;
+    }
+    if (Foto5 != 0) {
+      Diana=5;
+    }
+    
   if(Disparos==0){
     Puntaje=0;
   }
@@ -96,15 +130,13 @@ void draw() {
     espera=0;
     shoot=false;
   }
-    switch(Modo){
+  text("espera= " + espera, 600, 450 );
+  switch(Modo){
     case 1:
-    text("Modo= " + Modo, 550, 75 );
-    text("Disparos= " + Disparos, 550, 175 );
-    text("Hit= " + Hit, 550, 275 );
-    text("Puntaje= " + Puntaje, 550, 375 );
       if(shoot){
         Disparos++;
         disparo.trigger();
+        Puntaje=Hit*datoUS/Disparos;
       }
       switch(Diana) {
       case 1: 
@@ -159,16 +191,12 @@ void draw() {
       break;
     
     case 2:
-    text("Modo= " + Modo, 550, 75 );
-    text("Disparos= " + Disparos, 550, 175 );
-    text("Hit= " + Hit, 550, 275 );
-    text("Puntaje= " + Puntaje, 550, 375 );
-    text("Tiempo= " + Tiempo/60, 550, 475 );
       if((Tiempo>0 & Tiempo<3600) | (shoot & Disparos==0) ){
-        Tiempo--;
+        Tiempo++;
         if(shoot){
           Disparos++;
           disparo.trigger();
+          Puntaje=Hit*datoUS/Disparos;
         }
         if(Diana!=0){
           Hit++;
@@ -177,23 +205,18 @@ void draw() {
           Diana=0;
         }
       }
-      if(Tiempo==0){
-        fill(0);
-        text("Tiempo= " + Tiempo/60, 550, 475 );
-        fill(255, 0, 0);
-      text("El tiempo se acabÃ³ ", 550, 475 );
+      if(Tiempo==3600){
+      text("El tiempo se acabó ", 600, 300 );
       }
       break;
       
     case 3:
-    text("Modo= " + Modo, 550, 75 );
-    text("Disparos= " + Disparos, 550, 175 );
-    text("Hit= " + Hit, 550, 275 );
-    text("Puntaje= " + Puntaje, 550, 375 );
-    text("Objetivo= " + objetivo, 550, 475 );
+      fill(255);
+      text("Objetivo= " + objetivo, 600, 350 );
       if(shoot){
          Disparos++;
          disparo.trigger();
+         Puntaje=Hit*datoUS/Disparos;
         }
       fill(0, 255, 0);  
       switch(objetivo) {
@@ -256,7 +279,47 @@ void keyPressed() {
     }
     if (key == 'r' ) {
       recarga.trigger();
-      inicio=false;
       Reset=true;
     }
+}
+
+
+void serialEvent(Serial myPort) {
+   while (myPort.available() > 0) {
+    inByte = myPort.readBytes();
+
+    trama1 = inByte[1];
+    trama2 = inByte[2];
+    Ultrasonido = (trama1 & 0x1F);
+    Ultrasonido = (Ultrasonido << 7);
+    Ultrasonido = (Ultrasonido | trama2);
+    datoUS = 1970+Ultrasonido;
+    Boton = trama1 & 0x40;
+    Foto1 = trama1 & 0x20;
+    
+    trama3 = inByte[3];
+    trama4 = inByte[4];
+    EjeX = (trama3 & 0x1F);
+    EjeX = (EjeX << 7);
+    EjeX = (EjeX | trama4);
+    datoEjeX = EjeX-1870;
+    Foto2 = trama3 & 0x40;
+    Foto3 = trama3 & 0x20;
+
+    trama5 = inByte[5];
+    trama6 = inByte[6];
+    EjeY = (trama5 & 0x1F);
+    EjeY = (EjeY << 7);
+    EjeY = (EjeY | trama6);
+    datoEjeY = EjeY-1996;
+    Foto4 = trama5 & 0x40;
+    Foto5 = trama5 & 0x20;
+ 
+    trama7 = inByte[7];
+    trama8 = inByte[8];
+    EjeZ = (trama1 & 0x7F);
+    EjeZ = (EjeZ << 7);
+    EjeZ = (EjeZ | trama8);
+    datoEjeZ = EjeZ-1982;
+   }
 }

@@ -1,6 +1,6 @@
 size(1000, 400);
 // Open a file and read its binary data 
-byte b[] = loadBytes("prueba2y.txt"); 
+byte b[] = loadBytes("pruebaUS.txt"); 
 float a=0, s=0, y2, x=10, Total=0, Suma=0;
 int k=11, contadorMax=4095, contadormin=0;
 float[] hist = new float[4096];

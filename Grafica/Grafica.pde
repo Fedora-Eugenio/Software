@@ -22,7 +22,7 @@ void setup() {
   myPort.buffer(9);
   background(0);
   // Create a new file in the sketch directory
-  output = createWriter("prueba1z.txt"); 
+  output = createWriter("pruebaUS.txt"); 
 }
 
 void draw() {
@@ -34,21 +34,8 @@ void draw() {
   stroke(255);
   rect(10, 10, 1330, 680);
   /*relleno = (trama1 & 0x60);
-  fill(255);
-  relleno = (relleno >> 5); 
-  if (relleno==00){
-     c1 = color(255, 0, 0);}
-  if (relleno==01){
-     c1 = color(0, 255, 0);}
-  if (relleno==2){
-     c1 = color(0, 0, 255);}
-   if (relleno==3){
-     c1 = color(255, 255, 255);}
-  strokeWeight(2);
+
   */
-  
-  
-  
  if(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2)) > 1000){
    if ( datoEjeY < 50 & datoEjeY > -50){
     anguloV= atan2(datoEjeZ, datoEjeX)*180/PI;
@@ -81,12 +68,14 @@ void draw() {
   //println("X= " + datoEjeX + "  Y= " + datoEjeY + "  Z= " + datoEjeZ);
    //float modulo = sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2));
    //println(modulo);
- // output.print(modulo + " "); // Write data
+ output.println(binary(datoUS, 12)); // Write data
+ 
  anguloV= atan2(datoEjeZ, datoEjeX)*180/PI;
  anguloH= atan2(datoEjeZ, datoEjeY)*180/PI;
   //println("ángulo horizontal= " + anguloH + "°");
   //println("ángulo vertical= " + anguloV + "°");
   println("Ultrasonido= " + datoUS);
+  
 }
 
 void serialEvent(Serial myPort) {
@@ -95,35 +84,35 @@ void serialEvent(Serial myPort) {
 
     trama1 = inByte[1];
     trama2 = inByte[2];
-    EjeX = (trama1 & 0x1F);
-    EjeX = (EjeX << 7);
-    EjeX = (EjeX | trama2);
-    datoEjeX = EjeX-1870;
-    EjeX = 690-(EjeX*680/4095);
+    Ultrasonido = (trama1 & 0x1F);
+    Ultrasonido = (Ultrasonido << 7);
+    Ultrasonido = (Ultrasonido | trama2);
+    datoUS = Ultrasonido-1870;
+    Ultrasonido = 690-(Ultrasonido*680/4095);
     
     trama3 = inByte[3];
     trama4 = inByte[4];
-    EjeY = (trama3 & 0x1F);
-    EjeY = (EjeY << 7);
-    EjeY = (EjeY | trama4);
-    datoEjeY = EjeY-1996;
-    EjeY = 690-(EjeY*680/4095);
+    EjeX = (trama3 & 0x1F);
+    EjeX = (EjeX << 7);
+    EjeX = (EjeX | trama4);
+    datoEjeX = EjeX-1996;
+    EjeX = 690-(EjeX*680/4095);
     
     trama5 = inByte[5];
     trama6 = inByte[6];
-    EjeZ = (trama5 & 0x1F);
-    EjeZ = (EjeZ << 7);
-    EjeZ = (EjeZ | trama6);
-    datoEjeZ = EjeZ-1982;
-    EjeZ = 690-(EjeZ*680/4095);
+    EjeY = (trama5 & 0x1F);
+    EjeY = (EjeY << 7);
+    EjeY = (EjeY | trama6);
+    datoEjeY = EjeY-1982;
+    EjeY = 690-(EjeY*680/4095);
     
     trama7 = inByte[7];
     trama8 = inByte[8];
-    Ultrasonido = (trama1 & 0x7F);
-    Ultrasonido = (Ultrasonido << 7);
-    Ultrasonido = (Ultrasonido | trama8);
-    datoUS = Ultrasonido;
-    Ultrasonido = 690-(Ultrasonido*680/4095);
+    EjeZ = (trama1 & 0x7F);
+    EjeZ = (EjeZ << 7);
+    EjeZ = (EjeZ | trama8);
+    datoEjeZ = EjeZ;
+    EjeZ = 690-(EjeZ*680/4095);
     
     
     if (xA1 >= 10 & xA1 < 1340){
