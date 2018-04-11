@@ -85,6 +85,9 @@ void draw() {
     anguloV= atan2(datoEjeZ, datoEjeX)*180/PI;
     println("ángulo vertical= " + anguloV + "°");
     println("Eje Y= " + datoEjeY);
+    recarga.trigger();
+    inicio=false;
+    Reset=true;
    }
     if ( datoEjeX < 50 & datoEjeX > -50){
       anguloH= atan2(datoEjeZ, datoEjeY)*180/PI;

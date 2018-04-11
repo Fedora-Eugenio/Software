@@ -33,19 +33,27 @@ void draw() {
   noFill();
   stroke(255);
   rect(10, 10, 1330, 680);
-  /*relleno = (trama1 & 0x60);
+  relleno = (trama1 & 0x60);
 
-  */
- if(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2)) > 1000){
-   if ( datoEjeY < 50 & datoEjeY > -50){
+  
+ if(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2)) > 2000){
+   if ( datoEjeY < 0 & datoEjeY > -500){
     anguloV= atan2(datoEjeZ, datoEjeX)*180/PI;
-    println("ángulo vertical= " + anguloV + "°");
-    println("Eje Y= " + datoEjeY);
+    //println("ángulo vertical= " + anguloV + "°");
+    if ( anguloV < -105 ){
+      println("reset" );
+      }
+    
    }
-    if ( datoEjeX < 50 & datoEjeX > -50){
+    if ( datoEjeX < 200 & datoEjeX > -300){
       anguloH= atan2(datoEjeZ, datoEjeY)*180/PI;
-      println("ángulo horizontal= " + anguloH + "°");
-      println("Eje X= " + datoEjeX);
+     // println("ángulo horizontal= " + anguloH + "°");
+      if ( anguloH > -85 ){
+      println("cambio derecha" );
+      }
+      if ( anguloH < -105 ){
+      println("cambio izquierda" );
+      }
    }
  }
   
@@ -68,14 +76,14 @@ void draw() {
   //println("X= " + datoEjeX + "  Y= " + datoEjeY + "  Z= " + datoEjeZ);
    //float modulo = sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2));
    //println(modulo);
- output.println(binary(datoUS, 12)); // Write data
- 
+ //output.println(binary(datoUS, 12)); // Write data
+ /*
  anguloV= atan2(datoEjeZ, datoEjeX)*180/PI;
  anguloH= atan2(datoEjeZ, datoEjeY)*180/PI;
-  //println("ángulo horizontal= " + anguloH + "°");
-  //println("ángulo vertical= " + anguloV + "°");
-  println("Ultrasonido= " + datoUS);
-  
+  println("ángulo horizontal= " + anguloH + "°");
+  println("ángulo vertical= " + anguloV + "°");
+  println(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2)));
+  */
 }
 
 void serialEvent(Serial myPort) {
@@ -87,7 +95,7 @@ void serialEvent(Serial myPort) {
     Ultrasonido = (trama1 & 0x1F);
     Ultrasonido = (Ultrasonido << 7);
     Ultrasonido = (Ultrasonido | trama2);
-    datoUS = Ultrasonido-1870;
+    datoUS = Ultrasonido;
     Ultrasonido = 690-(Ultrasonido*680/4095);
     
     trama3 = inByte[3];
@@ -95,7 +103,7 @@ void serialEvent(Serial myPort) {
     EjeX = (trama3 & 0x1F);
     EjeX = (EjeX << 7);
     EjeX = (EjeX | trama4);
-    datoEjeX = EjeX-1996;
+    datoEjeX = EjeX-1870;
     EjeX = 690-(EjeX*680/4095);
     
     trama5 = inByte[5];
@@ -103,7 +111,7 @@ void serialEvent(Serial myPort) {
     EjeY = (trama5 & 0x1F);
     EjeY = (EjeY << 7);
     EjeY = (EjeY | trama6);
-    datoEjeY = EjeY-1982;
+    datoEjeY = EjeY-1996;
     EjeY = 690-(EjeY*680/4095);
     
     trama7 = inByte[7];
@@ -111,7 +119,7 @@ void serialEvent(Serial myPort) {
     EjeZ = (trama1 & 0x7F);
     EjeZ = (EjeZ << 7);
     EjeZ = (EjeZ | trama8);
-    datoEjeZ = EjeZ;
+    datoEjeZ = EjeZ-1982;;
     EjeZ = 690-(EjeZ*680/4095);
     
     
