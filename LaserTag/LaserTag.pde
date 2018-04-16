@@ -12,10 +12,10 @@ AudioSample hit;
 AudioSample recarga;
 AudioSample cambio;
 AudioSample Shootist;
-boolean Reset=true, Gatillo=false, Disponible=true, shoot=false, inicio=true;
+boolean Reset=true, Gatillo=false, Disponible=true, shoot=false, inicio=true, estado=true;
 PImage silueta;
-float Disparos, Hit, Puntaje, acumulado;
-int Diana, multi, Blanco, Tiempo=3600, Modo=1, objetivo=1, contador=0, espera=0, j=0, k=0;
+float Disparos=1, Hit, Puntaje, acumulado;
+int Diana, multi, Blanco, Tiempo=3600, Modo=1, objetivo=1, contador=0, espera=0, j=0, k=0, balas=6;
 float[] distribution = new float[360];
 PFont font1;
 
@@ -38,45 +38,33 @@ void setup(){
 }
 
 void draw() {
-  println(datoUS);
-  if(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)+pow(datoEjeZ, 2)) > 2100){
-   if ( datoEjeY < 0 & datoEjeY > -500){
-    anguloV= atan2(datoEjeZ, datoEjeX)*180/PI;
-    //println("ángulo vertical= " + anguloV + "°");
-    if ( anguloV < -105 ){
-      println("reset" );
+ 
+  
+    if(sqrt(pow(datoEjeX, 2)+pow(datoEjeY, 2)) > 1000){
+   if ( datoEjeY < 100 & datoEjeY >-100 & estado & Disparos!=0){
       recarga.trigger();
       inicio=false;
       Reset=true;
+      estado=false;
       }
-    if ( anguloV > -85 ){
-      println("Modo3" );
-      Modo=3;
-      cambio.trigger();
-      Reset=true;
-      }
-    
-   }
-    if ( datoEjeX < 200 & datoEjeX > -300){
-      anguloH= atan2(datoEjeZ, datoEjeY)*180/PI;
-     // println("ángulo horizontal= " + anguloH + "°");
-      if ( anguloH > -85 ){
-      println("Modo2" );
+      if ( datoEjeY > 450 & estado & Modo!=2){
       Modo=2;
       cambio.trigger();
       Reset=true;
+      estado=false;
       }
-      if ( anguloH < -105 ){
-      println("Modo1" );
-      constrain (Modo, 1, 3);
+      if ( datoEjeY < -450 & estado & Modo!=1){
       Modo=1;
       cambio.trigger();
       Reset=true;
+      estado=false;
       }
+   }else{
+     estado=true;
    }
- }
+   
   if(contador==0){
-   //Shootist.trigger();
+   Shootist.trigger();
   }
   contador++;
    if(contador==14400){
@@ -110,6 +98,7 @@ void draw() {
   if(Reset){
       Disparos=0;
       Hit=0;
+      balas=6;
       Puntaje=0;
       acumulado=0;
       Diana=0;
@@ -123,10 +112,10 @@ void draw() {
   image(silueta, 0, 0);
   fill(0, 0, 255);
   ellipse(250, 100, 20, 20);
-  ellipse(175, 200, 20, 20);
+/*  ellipse(175, 200, 20, 20);
   ellipse(325, 200, 20, 20);
   ellipse(175, 350, 20, 20);
-  ellipse(325, 350, 20, 20);
+  ellipse(325, 350, 20, 20);*/
   fill(255, 0, 0);
   
   
@@ -152,7 +141,7 @@ void draw() {
   if (Foto1!=0) {
       Diana=1;
     }
-  if (Foto2!=0) {
+/*  if (Foto2!=0) {
       Diana=2;
     }
   if (Foto3!=0) { 
@@ -163,30 +152,37 @@ void draw() {
     }
   if (Foto5!=0) {
       Diana=5;
-    }
+    }*/
     switch(Modo){
     case 1:
-    text("Modo= " + Modo, 550, 75 );
-    text("Disparos= " + Disparos, 550, 175 );
-    text("Hit= " + Hit, 550, 275 );
-    text("Puntaje= " + Puntaje, 550, 375 );
-      if(shoot){
+    text("Modo Libre", 550, 75 );
+    text("Disparos = " + Disparos, 550, 175 );
+    text("Hit = " + Hit, 550, 275 );
+    text("Puntaje = " + Puntaje, 550, 375 );
+    text("Balas = " + balas, 550, 475 );
+      if(shoot & balas>0){
         Disparos++;
         disparo.trigger();
+         println("Multiplicador = " + datoUS);
+        balas--;
       }
+      if(balas==0){
+          text("¡RECARGA!", 150, 275 );
+        }
       switch(Diana) {
       case 1: 
         ellipse(250, 100, 20, 20);
-        if(Blanco!=1 & shoot){
+        if(shoot & balas!=0){
           Hit++;
           hit.trigger();
           multi=datoUS;
           acumulado = Puntaje;
           image(silueta, 15, 0);
-          Blanco=1;
-        }
+          
+        }Diana = 0;
+        
         break;
-      case 2: 
+   /*   case 2: 
         ellipse(175, 200, 20, 20);
         if(Blanco!=2 & shoot){
           Hit++;
@@ -229,7 +225,7 @@ void draw() {
           image(silueta, 15, 0);
           Blanco=5;
         }
-        break;
+        break;*/
         default:
         Puntaje=0;
         break;
@@ -237,16 +233,17 @@ void draw() {
       break;
     
     case 2:
-    text("Modo= " + Modo, 550, 75 );
-    text("Disparos= " + Disparos, 550, 175 );
-    text("Hit= " + Hit, 550, 275 );
-    text("Puntaje= " + Puntaje, 550, 375 );
-    text("Tiempo= " + Tiempo/60, 550, 475 );
+    text("Contrarreloj", 550, 75 );
+    text("Disparos = " + Disparos, 550, 175 );
+    text("Hit = " + Hit, 550, 275 );
+    text("Puntaje = " + Puntaje, 550, 375 );
+    text("Tiempo = " + Tiempo/60, 550, 475 );
       if((Tiempo>0 & Tiempo<3600) | (shoot & Disparos==0) ){
         Tiempo--;
         if(shoot){
           Disparos++;
           disparo.trigger();
+          println("Multiplicador= " + datoUS);
         }
         if(Diana!=0 & shoot){
           Hit++;
@@ -254,18 +251,16 @@ void draw() {
           multi=datoUS;
           acumulado = Puntaje;
           image(silueta, 15, 0);
-          Diana=0;
-        }
+          
+        }Diana=0;
       }
       if(Tiempo==0){
-        fill(0);
-        text("Tiempo= " + Tiempo/60, 550, 475 );
-        fill(255, 0, 0);
-      text("El tiempo se acabó ", 550, 475 );
+        
+      text("¡Se te acabó el tiempo!", 90, 250 );
       }
       break;
       
-    case 3:
+   /* case 3:
     text("Modo= " + Modo, 550, 75 );
     text("Disparos= " + Disparos, 550, 175 );
     text("Hit= " + Hit, 550, 275 );
@@ -301,7 +296,7 @@ void draw() {
          image(silueta, 15, 0);
          objetivo = int(random (1, 6));
         }
-    
+    */
     }
     Gatillo=false;
   }
@@ -309,12 +304,12 @@ void draw() {
 void keyPressed() {
     if (key == 'm') {
       Modo++;
-      Modo = constrain (Modo, 1, 3);
+      Modo = constrain (Modo, 1, 2);
       cambio.trigger();
       Reset=true;
     }
     if (key == 'n') {
-      constrain (Modo, 1, 3);
+      constrain (Modo, 1, 2);
       Modo--;
       Modo = constrain (Modo, 1, 3);
       cambio.trigger();
@@ -324,7 +319,7 @@ void keyPressed() {
     if (key == '8') {
       Diana=1;
     }
-    if (key == '4') {
+   /* if (key == '4') {
       Diana=2;
     }
     if (key == '6') { 
@@ -335,7 +330,7 @@ void keyPressed() {
     }
     if (key == '3') {
       Diana=5;
-    }
+    }*/
     if (key == 'r' ) {
       recarga.trigger();
       inicio=false;
